@@ -1,24 +1,52 @@
-import logo from './logo.svg';
 import './App.css';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import PokemonCard from './components/PokemonCard';
+import Grid from '@material-ui/core/Grid';
+
 
 function App() {
+  const [pokemonData, setPokemonData] = useState(null);
+
+  useEffect(() => {
+
+    const setPokemon = async () => {
+      const url = "https://pokeapi.co/api/v2/pokemon"
+      try {
+        const response = await axios.get(url)
+        setPokemonData(response.data.results)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    setPokemon()
+    console.log(pokemonData)
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Grid container >
+      <Grid
+        container
+        justify="center"
+        alignItems="center"
+        display="blocks"
+        spacing="2"
+        style={{width: "70%"}}>
+
+        {
+          pokemonData.map((specificPokemon, index) => {
+            const { name } = specificPokemon
+            return (
+              <Grid item xs={3}>
+                <PokemonCard
+                  urlImage={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${index + 1}.png`}
+                  id={index}
+                  name={name} />
+              </Grid>)
+          })
+        }
+      </Grid>
+    </Grid>
   );
 }
 
